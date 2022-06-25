@@ -1,0 +1,13 @@
+.infoTable{
+    border: 2px;
+    border-color: black;
+    border-style: solid;
+}
+.infoTable *{
+    border: 1px;
+    border-style: solid;
+}
+.nav-item{
+    display: inline-block;
+    padding: 10px;
+}
