@@ -1,11 +1,12 @@
 <?php
     session_start();
     set_include_path('/home/junsu/Web');
+    include_once 'header.php';
     include "db_connect.php";
     $mysqli = linkDB();
-    $stmt = $mysqli->prepare("SELECT bid, title, content,User.userid, name from Bulletin,User where Bulletin.userid = User.userid AND bid = ?");
+    $stmt = $mysqli->prepare("SELECT bid, title, content,User.userid, name,haveFile from Bulletin,User where Bulletin.userid = User.userid AND bid = ?");
     $stmt->bind_param("i",$_GET['bid']);
-    $stmt->bind_result($bid,$title,$content,$userid,$name);
+    $stmt->bind_result($bid,$title,$content,$userid,$name,$haveFile);
     $stmt->execute();
     $success = $stmt->fetch();
     $stmt->close();
@@ -26,7 +27,7 @@
 <body>
     <div id='buttons' style='display:inline;float:right'>
         <?php
-            if(!strcmp($_SESSION[$_COOKIE['sessionid']],$userid)){//작성자의 기능
+            if(!strcmp($_SESSION[$_COOKIE['sessionid']],$userid)){
                 $_SESSION['token'] = bin2hex(random_bytes(8));
                 echo "<button id='update' onclick=\"location.href=`\${location.origin}/board/Update.php\${location.search}`\">수정</button>";
                 echo "<button id='delete' onclick=\"location.href=`\${location.origin}/board/Delete.php\${location.search}&token=$_SESSION[token]`\">삭제</button>";
@@ -34,7 +35,19 @@
         ?>
     </div>
     <div>
-        <?php echo "<h3>$title by $name</h3>"; ?>
+        <?php
+            echo "<h3>$title by $name</h3>";
+            if($haveFile=="Y"){
+                echo "debug";
+                $mysqli = linkDB();
+                $stmt = $mysqli->prepare("SELECT filename, filepath from File where bid = ?");
+                $stmt->bind_param("i",$bid);
+                $stmt->bind_result($filename,$filepath);
+                $stmt->execute();
+                $stmt->fetch();
+                echo "<h5><a href='/file/$filepath' download='$filename'>$filename</a></h5>";
+            }
+        ?>
         <div>
             <?php
                 $tok = strtok($content,"\n");

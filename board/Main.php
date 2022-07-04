@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="./board.css">
     <title>Board</title>
 </head>
-<body onload="init()">
+<body>
+    <?php
+        set_include_path('/home/junsu/Web');
+        include_once 'header.php';
+    ?>
     <table>
         <thead>
             <tr>
@@ -20,7 +24,6 @@
         </thead>
         <tbody>
             <?php
-                set_include_path('/home/junsu/Web');
                 include 'db_connect.php';
                 session_start();
                 $mysqli = linkDB();

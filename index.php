@@ -7,5 +7,8 @@
     }else{
         $uid = $_SESSION[$_COOKIE['sessionid']];
     }
-    // echo "<script>location.href='/board/Main.php'</script>";
+    include_once 'header.php';
 ?>
+<body>
+    <h1>CODING_DOREI</h1>
+</body>

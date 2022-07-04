@@ -10,15 +10,33 @@
     $mysqli = linkDB();
     $userid = $_SESSION[$_COOKIE['sessionid']];
     $bid = $_GET['bid'];
-    $stmt = $mysqli->prepare("SELECT title, content, userid from Bulletin where bid = ?");
+    $stmt = $mysqli->prepare("SELECT title, content, userid,haveFile from Bulletin where bid = ?");
     $stmt->bind_param("i",$bid);
-    $stmt->bind_result($title,$content,$author);
+    $stmt->bind_result($title,$content,$author,$haveFile);
     $stmt->execute();
     $stmt->fetch();
     $stmt->close();
     if(strcmp($userid,$author) != 0){
         unlinkDB($mysqli);
         exit();
+    }
+    echo $haveFile;
+    if($haveFile=="Y"){
+        $stmt = $mysqli->prepare("SELECT filepath from File where File.bid = ?");
+        $stmt->bind_param("i",$bid);
+        $stmt->bind_result($filepath);
+        $success = $stmt->execute();
+        if($success){
+            $stmt->fetch();
+            if(!unlink("/home/junsu/Web/file/$filepath")){
+                echo "<script>alert('Fail');location.href='/board/Main.php'</script>";
+                exit();
+            }
+            $stmt->close();
+        }else{
+            echo "<script>alert('Fail');location.href='/board/Main.php'</script>";
+            exit();
+        }
     }
     $stmt = $mysqli->prepare("delete from Bulletin where bid = ?");
     $stmt->bind_param("i",$bid);

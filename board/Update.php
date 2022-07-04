@@ -10,6 +10,7 @@
     <?php
         set_include_path('/home/junsu/Web');
         include "db_connect.php";
+        include_once 'header.php';
         session_start();
         if(!$_SESSION[$_COOKIE['sessionid']]){//로그인 안하면 못 씀
             echo "<script>location.href = '/login.php'</script>";
